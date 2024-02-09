@@ -1,0 +1,5 @@
+app/api/generated/
+infrastructure/
+node_modules/
+public/
+server/build/

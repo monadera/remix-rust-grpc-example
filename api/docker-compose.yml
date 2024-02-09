@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16.1
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dummy
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+  api:
+    image: trading-api
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  pg-data:
+    driver: local
