@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package refdata;
+
+message Stock {
+  int32 id = 1;
+  string symbol = 2;
+  string name = 3;
+}
+
+message Stocks {
+  repeated Stock stocks = 1;
+}
+
+service RefData {
+  rpc AllStocks(google.protobuf.Empty) returns (Stocks);
+  rpc AddStock(Stock) returns (google.protobuf.Empty);
+}
