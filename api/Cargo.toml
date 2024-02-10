@@ -8,6 +8,7 @@ anyhow = "1.0.79"
 dotenvy = "0.15"
 prost = "0.12"
 prost-types = "0.12"
+sqlx = { version = "0.7", features = [ "bigdecimal", "chrono", "migrate", "postgres", "runtime-tokio", "time", "tls-rustls" ] }
 thiserror = "1.0"
 tokio = { version = "1.35", features = ["rt-multi-thread", "macros"] }
 tonic = "0.11"
