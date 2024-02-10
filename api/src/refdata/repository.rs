@@ -1,5 +1,6 @@
 use crate::error::Result;
 use crate::refdata::models::Stock;
+use sqlx::PgPool;
 
 #[tonic::async_trait]
 pub trait RefDataRepository {
@@ -7,11 +8,13 @@ pub trait RefDataRepository {
     async fn add_stock(&self, symbol: &str, name: &str) -> Result<Stock>;
 }
 
-pub struct PostgresRefDataRepository {}
+pub struct PostgresRefDataRepository {
+    pool: PgPool,
+}
 
 impl PostgresRefDataRepository {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(pool: PgPool) -> Self {
+        Self { pool }
     }
 }
 
