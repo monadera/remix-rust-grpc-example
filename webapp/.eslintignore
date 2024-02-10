@@ -1,0 +1,5 @@
+infrastructure/
+node_modules/
+public/
+build/
+app/components/ui/

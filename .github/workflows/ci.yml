@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  api-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        working-directory: ./api
+        run: cargo build --verbose
+      - name: Run Clippy
+        working-directory: ./api
+        run: cargo clippy --all-targets --all-features -- -Dclippy::all -D warnings
+      - name: Run tests
+        working-directory: ./api
+        run: cargo test --verbose
+
+  webapp-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install packages
+        working-directory: ./webapp
+        run: npm ci
+      - name: Typecheck
+        working-directory: ./webapp
+        run: npm run typecheck
+      - name: Lint
+        working-directory: ./webapp
+        run: npm run lint
+      - name: Format
+        working-directory: ./webapp
+        run: npm run formatcheck
