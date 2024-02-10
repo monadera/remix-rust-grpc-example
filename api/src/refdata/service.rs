@@ -17,8 +17,8 @@ impl<R> RefDataService<R> {
 
 #[tonic::async_trait]
 impl<R> RefData for RefDataService<R>
-    where
-        R: RefDataRepository + Send + Sync + 'static,
+where
+    R: RefDataRepository + Send + Sync + 'static,
 {
     async fn all_stocks(&self, _request: Request<()>) -> Result<Response<Stocks>, Status> {
         let stocks = self
