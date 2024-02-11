@@ -1,6 +1,7 @@
+use sqlx::PgPool;
+
 use crate::error::Result;
 use crate::refdata::models::Stock;
-use sqlx::PgPool;
 
 #[tonic::async_trait]
 pub trait RefDataRepository {
@@ -25,6 +26,15 @@ impl RefDataRepository for PostgresRefDataRepository {
     }
 
     async fn add_stock(&self, symbol: &str, name: &str) -> Result<Stock> {
-        todo!()
+        let stock = sqlx::query_as!(
+            Stock,
+            "INSERT INTO stocks (symbol, name) VALUES ($1, $2) RETURNING id, symbol, name",
+            symbol,
+            name
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(stock)
     }
 }
