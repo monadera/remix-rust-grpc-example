@@ -22,7 +22,11 @@ impl PostgresRefDataRepository {
 #[tonic::async_trait]
 impl RefDataRepository for PostgresRefDataRepository {
     async fn get_all_stocks(&self) -> Result<Vec<Stock>> {
-        todo!()
+        let stocks = sqlx::query_as!(Stock, "SELECT id, symbol, name FROM stocks",)
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(stocks)
     }
 
     async fn add_stock(&self, symbol: &str, name: &str) -> Result<Stock> {
