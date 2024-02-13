@@ -12,6 +12,19 @@ env:
 jobs:
   api-checks:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: dummy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v3
       - name: Install Protoc
@@ -22,7 +35,17 @@ jobs:
       - name: Run Clippy
         working-directory: ./api
         run: cargo clippy --all-targets --all-features -- -Dclippy::all -D warnings
+      - name: Setup database
+        env:
+          DATABASE_URL: postgres://postgres:dummy@localhost:5432/trading
+        working-directory: ./api
+        run: |
+          cargo install sqlx-cli --no-default-features --features postgres
+          sqlx database create
+          sqlx migrate run
       - name: Run tests
+        env:
+          DATABASE_URL: postgres://postgres:dummy@localhost:5432/trading
         working-directory: ./api
         run: cargo test --verbose
 
