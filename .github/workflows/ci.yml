@@ -8,13 +8,14 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  DATABASE_URL: postgres://postgres:dummy@localhost:5432/trading
 
 jobs:
   api-checks:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:15
+        image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: dummy
@@ -31,21 +32,21 @@ jobs:
         uses: arduino/setup-protoc@v3
       - name: Build
         working-directory: ./api
+        env:
+          SQLX_OFFLINE: true
         run: cargo build --verbose
       - name: Run Clippy
         working-directory: ./api
+        env:
+          SQLX_OFFLINE: true
         run: cargo clippy --all-targets --all-features -- -Dclippy::all -D warnings
       - name: Setup database
-        env:
-          DATABASE_URL: postgres://postgres:dummy@localhost:5432/trading
         working-directory: ./api
         run: |
           cargo install sqlx-cli --no-default-features --features postgres
           sqlx database create
           sqlx migrate run
       - name: Run tests
-        env:
-          DATABASE_URL: postgres://postgres:dummy@localhost:5432/trading
         working-directory: ./api
         run: cargo test --verbose
 
