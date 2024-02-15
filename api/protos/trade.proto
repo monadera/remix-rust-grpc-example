@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "refdata.proto";
+
+package trade;
+
+enum Side {
+  SELL = 0;
+  BUY = 1;
+}
+
+message MarketOrder {
+  int32 stock_id = 1;
+  uint32 quantity = 2;
+  Side side = 3;
+}
+
+message Position {
+  refdata.Stock stock = 1;
+  uint32 quantity = 2;
+}
+
+message Positions {
+  repeated Position positions = 1;
+}
+
+service Trade {
+  rpc SendOrder(MarketOrder) returns (google.protobuf.Empty);
+  rpc AllPositions(google.protobuf.Empty) returns (Positions);
+}

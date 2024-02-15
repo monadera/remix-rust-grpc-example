@@ -4,4 +4,8 @@ pub mod proto {
     pub mod refdata {
         tonic::include_proto!("refdata");
     }
+
+    pub mod trade {
+        tonic::include_proto!("trade");
+    }
 }
