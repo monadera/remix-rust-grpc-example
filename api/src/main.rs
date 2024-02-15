@@ -8,7 +8,9 @@ use tracing_subscriber::util::SubscriberInitExt;
 
 use trading_api::refdata::{PostgresRefDataRepository, RefDataService};
 use trading_api::services::proto::refdata::ref_data_server::RefDataServer;
+use trading_api::services::proto::trade::trade_server::TradeServer;
 use trading_api::services::FILE_DESCRIPTOR_SET;
+use trading_api::trade::{PostgresTradeRepository, TradeService};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -20,6 +22,7 @@ async fn main() -> Result<()> {
         .register_encoded_file_descriptor_set(FILE_DESCRIPTOR_SET)
         .build()?;
     let refdata_service = RefDataServer::new(build_refdata_service(pool.clone()));
+    let trade_service = TradeServer::new(build_trade_service(pool.clone()));
 
     let address = "0.0.0.0:8080".parse()?;
     info!("Service is listening on {address}");
@@ -27,6 +30,7 @@ async fn main() -> Result<()> {
     Server::builder()
         .add_service(reflection_service)
         .add_service(refdata_service)
+        .add_service(trade_service)
         .serve(address)
         .await?;
 
@@ -36,6 +40,11 @@ async fn main() -> Result<()> {
 fn build_refdata_service(pool: PgPool) -> RefDataService<PostgresRefDataRepository> {
     let repository = PostgresRefDataRepository::new(pool);
     RefDataService::new(repository)
+}
+
+fn build_trade_service(pool: PgPool) -> TradeService<PostgresTradeRepository> {
+    let repository = PostgresTradeRepository::new(pool);
+    TradeService::new(repository)
 }
 
 pub async fn pg_pool() -> Result<PgPool> {
