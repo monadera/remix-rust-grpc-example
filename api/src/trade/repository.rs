@@ -47,6 +47,10 @@ impl TradeRepository for PostgresTradeRepository {
     }
 
     async fn get_all_positions(&self) -> Result<Vec<Position>> {
-        todo!()
+        let positions = sqlx::query_file_as!(Position, "src/queries/all_positions.sql")
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(positions)
     }
 }
