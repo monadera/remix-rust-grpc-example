@@ -1,6 +1,6 @@
-import { createChannel, createClient } from "nice-grpc";
+import { ClientError, createChannel, createClient } from "nice-grpc";
 
-import type { TradeClient } from "~/api/generated/trade";
+import type { MarketOrder, TradeClient } from "~/api/generated/trade";
 import { TradeDefinition } from "~/api/generated/trade";
 
 let _client: TradeClient;
@@ -20,4 +20,16 @@ function getClient(): TradeClient {
 
 export async function allPositions() {
   return await getClient().allPositions({});
+}
+
+export async function sendOrder(order: MarketOrder) {
+  try {
+    await getClient().sendOrder(order);
+    return { ok: true, error: undefined };
+  } catch (err) {
+    if (err instanceof ClientError && err.code === 3) {
+      return { ok: false, error: "Insufficient position." };
+    }
+    throw err;
+  }
 }
