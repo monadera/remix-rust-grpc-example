@@ -1,7 +1,9 @@
 import { MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
+import { allStocks } from "~/api/refdata.server";
 import { allPositions } from "~/api/trade.server";
+import { OrderForm } from "~/components/order-form";
 import {
   Table,
   TableBody,
@@ -19,15 +21,16 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader = async () => {
-  const positions = await allPositions();
-  return json({ ...positions });
+  const [positions, stocks] = await Promise.all([allPositions(), allStocks()]);
+  return json({ ...positions, ...stocks });
 };
 
 export default function Index() {
-  const { positions } = useLoaderData<typeof loader>();
+  const { positions, stocks } = useLoaderData<typeof loader>();
 
   return (
     <div className="grid gap-6">
+      <OrderForm stocks={stocks} />
       <Table>
         <TableHeader>
           <TableRow>
