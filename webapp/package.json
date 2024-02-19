@@ -41,7 +41,10 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "isbot": "^4.1.0",
+    "long": "^5.2.3",
     "lucide-react": "^0.323.0",
+    "nice-grpc": "^2.1.7",
+    "protobufjs": "^7.2.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-validated-form": "^5.1.5",
@@ -63,8 +66,10 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "grpc-tools": "^1.12.4",
     "prettier": "3.2.5",
     "tailwindcss": "^3.4.1",
+    "ts-proto": "^1.167.8",
     "typescript": "^5.1.6"
   },
   "engines": {
